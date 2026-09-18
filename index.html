@@ -15,21 +15,32 @@
 
   <style>
     :root {
-      --bg-primary: #0f0c29;
-      --bg-secondary: #302b63;
-      --bg-tertiary: #24243e;
-      --gold: #f6d365;
-      --gold-dark: #d4a017;
-      /* Лицевая и оборотная стороны в единой гамме */
-      --card-back: linear-gradient(135deg, #1f2458 0%, #16133b 100%);
-      --lesson-card-bg: rgba(255, 255, 255, 0.07);
-      --lesson-card-hover: rgba(255, 255, 255, 0.14);
-      --text-light: #ffffff;
-      --text-muted: rgba(255, 255, 255, 0.65);
-      --text-dark: #2d2d2d;
-      --success: #00c853;
+      /* Сбалансированная успокаивающая база */
+      --bg-primary: #12151f;
+      --bg-secondary: #1a2030;
+      --bg-tertiary: #22293d;
+
+      /* Благородный тёплый янтарь (не слепит, снижает зрительную нагрузку) */
+      --accent-warm: #dfb15b;
+      --accent-warm-soft: #ebd095;
+      --accent-warm-dark: #b88628;
+
+      /* Оборотная сторона карточки — глубокий бархатный графит-индиго */
+      --card-back: linear-gradient(145deg, #1e2638 0%, #151a27 100%);
+      
+      /* Мягкие карточки уроков */
+      --lesson-card-bg: rgba(255, 255, 255, 0.04);
+      --lesson-card-hover: rgba(255, 255, 255, 0.08);
+      --card-border: rgba(255, 255, 255, 0.09);
+
+      /* Смягчённый светлый текст (без агрессивного гало-эффекта) */
+      --text-light: #edf2f7;
+      --text-muted: #9ba8ba;
+      --text-dark: #1b2028;
+
+      --success: #38b284;
       --radius: 20px;
-      --shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      --shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
     }
 
     *, *::before, *::after {
@@ -45,7 +56,7 @@
 
     body {
       font-family: 'Nunito', sans-serif;
-      background: linear-gradient(135deg, #1f2458 0%, #16133b 100%);
+      background: radial-gradient(120% 100% at 50% 0%, #1c2333 0%, #10131c 100%);
       color: var(--text-light);
       min-height: 100vh;
       overflow-x: hidden;
@@ -53,14 +64,15 @@
       padding-bottom: env(safe-area-inset-bottom, 0);
     }
 
+    /* Рассеянные фоновые ореолы пониженной яркости */
     body::before {
       content: '';
       position: fixed;
-      top: -50%;
-      right: -30%;
-      width: 80vw;
-      height: 80vw;
-      background: radial-gradient(circle, rgba(246, 211, 101, 0.06) 0%, transparent 70%);
+      top: -30%;
+      right: -20%;
+      width: 65vw;
+      height: 65vw;
+      background: radial-gradient(circle, rgba(223, 177, 91, 0.04) 0%, transparent 65%);
       border-radius: 50%;
       pointer-events: none;
       z-index: 0;
@@ -69,11 +81,11 @@
     body::after {
       content: '';
       position: fixed;
-      bottom: -40%;
+      bottom: -30%;
       left: -20%;
       width: 60vw;
       height: 60vw;
-      background: radial-gradient(circle, rgba(102, 126, 234, 0.08) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(56, 178, 132, 0.035) 0%, transparent 65%);
       border-radius: 50%;
       pointer-events: none;
       z-index: 0;
@@ -93,25 +105,27 @@
     }
 
     .header-icon {
-      font-size: 3rem;
+      font-size: 2.8rem;
       margin-bottom: 10px;
       display: block;
       animation: float 3s ease-in-out infinite;
+      filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.25));
     }
 
     @keyframes float {
       0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
+      50% { transform: translateY(-8px); }
     }
 
     .header h1 {
       font-size: 1.9rem;
       font-weight: 800;
-      background: linear-gradient(135deg, var(--gold), #fda085);
+      background: linear-gradient(135deg, #f0ede6 0%, #cbd5e1 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
       margin-bottom: 8px;
+      letter-spacing: -0.02em;
     }
 
     .header p {
@@ -122,12 +136,13 @@
 
     .header .arabic-title {
       font-family: 'Noto Naskh Arabic', serif;
-      font-size: 2rem;
+      font-size: 2.1rem;
       font-weight: 600;
-      color: var(--gold);
+      color: var(--accent-warm);
       margin-bottom: 5px;
       direction: rtl;
       line-height: 1.6;
+      text-shadow: 0 2px 12px rgba(223, 177, 91, 0.18);
     }
 
     .lessons-grid {
@@ -139,13 +154,13 @@
 
     .lesson-card {
       background: var(--lesson-card-bg);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--card-border);
       border-radius: var(--radius);
-      padding: 30px 24px;
+      padding: 28px 24px;
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transition: all 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
       position: relative;
       overflow: hidden;
       user-select: none;
@@ -157,17 +172,17 @@
       top: 0;
       left: 0;
       right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, var(--gold), #fda085, #667eea);
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent-warm), #5a739c);
       opacity: 0;
       transition: opacity 0.3s;
     }
 
     .lesson-card:hover {
       background: var(--lesson-card-hover);
-      transform: translateY(-5px) scale(1.01);
+      transform: translateY(-4px);
       box-shadow: var(--shadow);
-      border-color: rgba(246, 211, 101, 0.3);
+      border-color: rgba(223, 177, 91, 0.3);
     }
 
     .lesson-card:hover::before {
@@ -175,11 +190,11 @@
     }
 
     .lesson-card:active {
-      transform: scale(0.98);
+      transform: scale(0.985);
     }
 
     .lesson-emoji {
-      font-size: 2.8rem;
+      font-size: 2.6rem;
       margin-bottom: 12px;
       display: block;
     }
@@ -188,19 +203,20 @@
       font-size: 0.75rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 2px;
-      color: var(--gold);
+      letter-spacing: 1.5px;
+      color: var(--accent-warm);
       margin-bottom: 6px;
     }
 
     .lesson-title {
-      font-size: 1.3rem;
+      font-size: 1.25rem;
       font-weight: 800;
       margin-bottom: 8px;
+      color: var(--text-light);
     }
 
     .lesson-desc {
-      font-size: 0.85rem;
+      font-size: 0.88rem;
       color: var(--text-muted);
       margin-bottom: 16px;
       line-height: 1.5;
@@ -213,7 +229,7 @@
     }
 
     .lesson-words-count {
-      font-size: 0.8rem;
+      font-size: 0.82rem;
       color: var(--text-muted);
       font-weight: 600;
     }
@@ -222,33 +238,34 @@
       width: 36px;
       height: 36px;
       border-radius: 50%;
-      background: rgba(246, 211, 101, 0.15);
+      background: rgba(223, 177, 91, 0.12);
+      color: var(--accent-warm);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.1rem;
-      transition: all 0.3s;
+      font-size: 1.05rem;
+      transition: all 0.25s;
     }
 
     .lesson-card:hover .lesson-arrow {
-      background: var(--gold);
+      background: var(--accent-warm);
       color: var(--text-dark);
       transform: translateX(4px);
     }
 
     .lesson-progress-bar {
       width: 100%;
-      height: 4px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 2px;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 3px;
       margin-top: 16px;
       overflow: hidden;
     }
 
     .lesson-progress-fill {
       height: 100%;
-      background: linear-gradient(90deg, var(--gold), var(--success));
-      border-radius: 2px;
+      background: linear-gradient(90deg, var(--accent-warm), var(--success));
+      border-radius: 3px;
       transition: width 0.4s ease;
       width: 0%;
     }
@@ -265,7 +282,7 @@
     @keyframes fadeInUp {
       from {
         opacity: 0;
-        transform: translateY(15px);
+        transform: translateY(14px);
       }
       to {
         opacity: 1;
@@ -287,9 +304,9 @@
       align-items: center;
       gap: 8px;
       padding: 10px 20px;
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.06);
       backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      border: 1px solid var(--card-border);
       border-radius: 50px;
       color: var(--text-light);
       font-family: 'Nunito', sans-serif;
@@ -301,27 +318,28 @@
     }
 
     .btn-back:hover {
-      background: rgba(255, 255, 255, 0.18);
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.2);
     }
 
     .btn-back:active {
-      background: rgba(255, 255, 255, 0.25);
+      background: rgba(255, 255, 255, 0.16);
     }
 
     .lesson-progress-info {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       font-weight: 700;
-      font-size: 0.9rem;
-      color: var(--gold);
+      font-size: 0.92rem;
+      color: var(--accent-warm);
     }
 
     .progress-circle {
       width: 44px;
       height: 44px;
       border-radius: 50%;
-      background: conic-gradient(var(--gold) var(--progress, 0%), rgba(255,255,255,0.1) 0%);
+      background: conic-gradient(var(--accent-warm) var(--progress, 0%), rgba(255,255,255,0.08) 0%);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -340,19 +358,21 @@
     .progress-circle span {
       position: relative;
       z-index: 1;
-      font-size: 0.7rem;
+      font-size: 0.72rem;
       font-weight: 800;
+      color: var(--text-light);
     }
 
     .lesson-page-title {
       text-align: center;
-      padding: 10px 0 24px;
+      padding: 10px 0 20px;
     }
 
     .lesson-page-title h2 {
       font-size: 1.8rem;
       font-weight: 800;
       margin-bottom: 6px;
+      color: var(--text-light);
     }
 
     .lesson-page-title p {
@@ -365,12 +385,12 @@
       color: var(--text-muted);
       font-size: 0.85rem;
       margin-bottom: 24px;
-      animation: pulse 2s ease-in-out infinite;
+      animation: pulse 2.5s ease-in-out infinite;
     }
 
     @keyframes pulse {
-      0%, 100% { opacity: 0.6; }
-      50% { opacity: 1; }
+      0%, 100% { opacity: 0.55; }
+      50% { opacity: 0.95; }
     }
 
     .cards-grid {
@@ -392,7 +412,7 @@
     @keyframes cardAppear {
       from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(16px);
       }
       to {
         opacity: 1;
@@ -425,13 +445,16 @@
       align-items: center;
       justify-content: center;
       padding: 20px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.28);
     }
 
+    /* ============================================================
+       ЛИЦЕВАЯ СТОРОНА (ОСТАВЛЕНА БЕЗ ИЗМЕНЕНИЙ)
+       ============================================================ */
     .flip-card-front {
       background: #fff;
       color: #000;
+      border: 1px solid rgba(255, 255, 255, 0.12);
     }
 
     .flip-card-front .card-number {
@@ -463,11 +486,14 @@
       text-transform: uppercase;
     }
 
-    /* Оборотная сторона карточки */
+    /* ============================================================
+       ОБОРОТНАЯ СТОРОНА КАРТОЧКИ (СБАЛАНСИРОВАННЫЙ ДИЗАЙН)
+       ============================================================ */
     .flip-card-back {
       background: var(--card-back);
       transform: rotateY(180deg);
       color: var(--text-light);
+      border: 1px solid rgba(223, 177, 91, 0.2);
     }
 
     .flip-card-back .translation {
@@ -477,21 +503,22 @@
       margin-bottom: 8px;
       line-height: 1.3;
       color: #ffffff;
-      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
     }
 
     .flip-card-back .transcription {
       font-size: 0.95rem;
-      color: var(--text-muted);
+      color: var(--accent-warm-soft);
       font-weight: 600;
       font-style: italic;
+      letter-spacing: 0.3px;
     }
 
     .flip-card-back .back-icon {
       position: absolute;
       bottom: 14px;
       font-size: 1.1rem;
-      opacity: 0.7;
+      opacity: 0.85;
     }
 
     .completion-banner {
@@ -499,9 +526,9 @@
       text-align: center;
       padding: 36px 20px;
       margin: 20px 0 40px;
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(246, 211, 101, 0.3);
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(223, 177, 91, 0.25);
       border-radius: var(--radius);
       animation: fadeInUp 0.4s ease;
     }
@@ -511,21 +538,21 @@
     }
 
     .completion-banner .trophy {
-      font-size: 3.5rem;
+      font-size: 3.2rem;
       margin-bottom: 12px;
       display: block;
-      animation: bounce 1s ease infinite;
+      animation: bounce 1.2s ease infinite;
     }
 
     @keyframes bounce {
       0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-12px); }
+      50% { transform: translateY(-10px); }
     }
 
     .completion-banner h3 {
       font-size: 1.5rem;
       font-weight: 800;
-      color: var(--gold);
+      color: var(--accent-warm);
       margin-bottom: 8px;
     }
 
@@ -536,9 +563,9 @@
 
     .btn-reset {
       margin-top: 20px;
-      padding: 12px 32px;
-      background: linear-gradient(135deg, var(--gold), #fda085);
-      color: var(--text-dark);
+      padding: 12px 34px;
+      background: linear-gradient(135deg, var(--accent-warm) 0%, #c89537 100%);
+      color: #12151e;
       border: none;
       border-radius: 50px;
       font-family: 'Nunito', sans-serif;
@@ -546,16 +573,21 @@
       font-weight: 800;
       cursor: pointer;
       transition: all 0.2s;
+      box-shadow: 0 4px 18px rgba(223, 177, 91, 0.25);
     }
 
     .btn-reset:hover {
-      transform: scale(1.04);
-      box-shadow: 0 8px 25px rgba(246, 211, 101, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 22px rgba(223, 177, 91, 0.35);
+    }
+
+    .btn-reset:active {
+      transform: translateY(0);
     }
 
     @media (max-width: 400px) {
       .header h1 { font-size: 1.5rem; }
-      .header .arabic-title { font-size: 1.5rem; }
+      .header .arabic-title { font-size: 1.6rem; }
       .cards-grid { grid-template-columns: 1fr; }
       .lessons-grid { grid-template-columns: 1fr; }
       .flip-card { height: 200px; }
@@ -633,7 +665,7 @@
 
       <p class="hint-text">👆 Нажми на карточку, чтобы увидеть перевод</p>
 
-      <!-- КОНТЕЙНЕР ДЛЯ 3D-КАРТОЧЕК СЛОВ -->
+      <!-- КОНТЕЙНЕР ДЛЯ КАРТОЧЕК СЛОВ -->
       <div class="cards-grid" id="cards-grid"></div>
 
       <div class="completion-banner" id="completion-banner">
@@ -673,7 +705,6 @@
           { ar: "دِينٌ",     ru: "Воздаяние / Религия",     tr: "ди́н(ун)" }
         ]
       },
-
       {
         title: "Сура аль-Фатиха. Часть 2",
         emoji: "📖",
@@ -695,11 +726,10 @@
           { ar: "مُسْتَقِيمٌ",       ru: "Прямой",          tr: "мустакъи́м(ун)" },
         ]
       }
-
     ];
 
     /* ============================================================
-       ⚙️ ЛОГИКА VK BRIDGE И ОБЛАЧНОГО ХРАНИЛИЩА (БЕЗ ВИБРАЦИИ)
+       ⚙️ ЛОГИКА VK BRIDGE И ОБЛАЧНОГО ХРАНИЛИЩА
        ============================================================ */
     const bridge = window.vkBridge || (typeof vkBridge !== 'undefined' ? vkBridge : null);
 
@@ -886,7 +916,7 @@
         setTimeout(() => {
           banner.classList.add('show');
           launchConfetti();
-        }, 500);
+        }, 450);
       } else {
         banner.classList.remove('show');
       }
@@ -922,7 +952,7 @@
     }
 
     function launchConfetti() {
-      const colors = ['#f6d365', '#fda085', '#667eea', '#764ba2', '#00c853', '#ff5252'];
+      const colors = ['#dfb15b', '#ebd095', '#7694b8', '#38b284', '#e28d75'];
       for (let i = 0; i < 40; i++) {
         setTimeout(() => {
           const piece = document.createElement('div');
