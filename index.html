@@ -21,7 +21,6 @@
       --gold: #f6d365;
       --gold-dark: #d4a017;
       /* Лицевая и оборотная стороны в единой гамме */
-      --card-front: linear-gradient(135deg, #1f2458 0%, #16133b 100%);
       --card-back: linear-gradient(135deg, #1f2458 0%, #16133b 100%);
       --lesson-card-bg: rgba(255, 255, 255, 0.07);
       --lesson-card-hover: rgba(255, 255, 255, 0.14);
@@ -431,8 +430,8 @@
     }
 
     .flip-card-front {
-      background: var(--card-front);
-      color: var(--text-light);
+      background: #fff;
+      color: #000;
     }
 
     .flip-card-front .card-number {
@@ -452,7 +451,6 @@
       direction: rtl;
       text-align: center;
       line-height: 1.7;
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
     }
 
     .flip-card-front .tap-hint {
@@ -697,7 +695,7 @@
           { ar: "مُسْتَقِيمٌ",       ru: "Прямой",          tr: "мустакъи́м(ун)" },
         ]
       }
-      
+
     ];
 
     /* ============================================================
