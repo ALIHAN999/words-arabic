@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="ru" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>تعلم العربية — Учим арабский</title>
+
+  <!-- VK Bridge SDK -->
+  <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
+
+  <!-- Шрифты -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-primary: #12151f;
+      --bg-secondary: #1a2030;
+      --bg-tertiary: #22293d;
+
+      --accent-warm: #dfb15b;
+      --accent-warm-soft: #ebd095;
+      --accent-warm-dark: #b88628;
+
+      --card-back: linear-gradient(145deg, #1e2638 0%, #151a27 100%);
+      
+      --lesson-card-bg: rgba(255, 255, 255, 0.04);
+      --lesson-card-hover: rgba(255, 255, 255, 0.08);
+      --card-border: rgba(255, 255, 255, 0.09);
+
+      --text-light: #edf2f7;
+      --text-muted: #9ba8ba;
+      --text-dark: #1b2028;
+
+      --success: #38b284;
+      --radius: 20px;
+      --shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
+    }
+
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: radial-gradient(120% 100% at 50% 0%, #1c2333 0%, #10131c 100%);
+      color: var(--text-light);
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding-top: env(safe-area-inset-top, 0);
+      padding-bottom: env(safe-area-inset-bottom, 0);
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: -30%;
+      right: -20%;
+      width: 65vw;
+      height: 65vw;
+      background: radial-gradient(circle, rgba(223, 177, 91, 0.04) 0%, transparent 65%);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      bottom: -30%;
+      left: -20%;
+      width: 60vw;
+      height: 60vw;
+      background: radial-gradient(circle, rgba(56, 178, 132, 0.035) 0%, transparent 65%);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .header {
+      text-align: center;
+      padding: 30px 0 20px;
+    }
+
+    .header-icon {
+      font-size: 2.8rem;
+      margin-bottom: 10px;
+      display: block;
+      animation: float 3s ease-in-out infinite;
+      filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.25));
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .header h1 {
+      font-size: 1.9rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #f0ede6 0%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+
+    .header p {
+      color: var(--text-muted);
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .header .arabic-title {
+      font-family: 'Noto Naskh Arabic', serif;
+      font-size: 2.1rem;
+      font-weight: 600;
+      color: var(--accent-warm);
+      margin-bottom: 5px;
+      direction: rtl;
+      line-height: 1.6;
+      text-shadow: 0 2px 12px rgba(223, 177, 91, 0.18);
+    }
+
+    .lessons-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      padding: 20px 0 60px;
+    }
+
+    .lesson-card {
+      background: var(--lesson-card-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      cursor: pointer;
+      transition: all 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    .lesson-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent-warm), #5a739c);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .lesson-card:hover {
+      background: var(--lesson-card-hover);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow);
+      border-color: rgba(223, 177, 91, 0.3);
+    }
+
+    .lesson-card:hover::before {
+      opacity: 1;
+    }
+
+    .lesson-card:active {
+      transform: scale(0.985);
+    }
+
+    .lesson-emoji {
+      font-size: 2.6rem;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .lesson-number {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--accent-warm);
+      margin-bottom: 6px;
+    }
+
+    .lesson-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+      color: var(--text-light);
+    }
+
+    .lesson-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+
+    .lesson-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .lesson-words-count {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .lesson-arrow {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(223, 177, 91, 0.12);
+      color: var(--accent-warm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.05rem;
+      transition: all 0.25s;
+    }
+
+    .lesson-card:hover .lesson-arrow {
+      background: var(--accent-warm);
+      color: var(--text-dark);
+      transform: translateX(4px);
+    }
+
+    .lesson-progress-bar {
+      width: 100%;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 3px;
+      margin-top: 16px;
+      overflow: hidden;
+    }
+
+    .lesson-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-warm), var(--success));
+      border-radius: 3px;
+      transition: width 0.4s ease;
+      width: 0%;
+    }
+
+    .page {
+      display: none;
+      animation: fadeInUp 0.3s ease;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .lesson-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--card-border);
+      border-radius: 50px;
+      color: var(--text-light);
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+    }
+
+    .btn-back:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-back:active {
+      background: rgba(255, 255, 255, 0.16);
+    }
+
+    .lesson-progress-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: var(--accent-warm);
+    }
+
+    .progress-circle {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: conic-gradient(var(--accent-warm) var(--progress, 0%), rgba(255,255,255,0.08) 0%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .progress-circle::after {
+      content: '';
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--bg-secondary);
+      position: absolute;
+    }
+
+    .progress-circle span {
+      position: relative;
+      z-index: 1;
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--text-light);
+    }
+
+    .lesson-page-title {
+      text-align: center;
+      padding: 10px 0 20px;
+    }
+
+    .lesson-page-title h2 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+      color: var(--text-light);
+    }
+
+    .lesson-page-title p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .hint-text {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-bottom: 24px;
+      animation: pulse 2.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.55; }
+      50% { opacity: 0.95; }
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+      padding-bottom: 60px;
+    }
+
+    .flip-card {
+      perspective: 1000px;
+      height: 220px;
+      cursor: pointer;
+      user-select: none;
+      opacity: 0;
+      animation: cardAppear 0.4s ease forwards;
+    }
+
+    @keyframes cardAppear {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .flip-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+      transform-style: preserve-3d;
+    }
+
+    .flip-card.flipped .flip-card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .flip-card-front,
+    .flip-card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      border-radius: var(--radius);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.28);
+    }
+
+    .flip-card-front {
+      background: linear-gradient(145deg, #faf7f2 0%, #f3ede2 100%);
+      color: #1a202c;
+      border: 1px solid rgba(223, 177, 91, 0.3);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
+    }
+
+    .flip-card-front .card-number {
+      position: absolute;
+      top: 14px;
+      left: 18px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: #7d776d;
+      opacity: 0.85;
+      letter-spacing: 1px;
+    }
+
+    .flip-card-front .arabic-word {
+      font-family: 'Noto Naskh Arabic', serif;
+      font-size: 2.6rem;
+      font-weight: 600;
+      direction: rtl;
+      text-align: center;
+      line-height: 1.7;
+      color: #171b24;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    .flip-card-front .tap-hint {
+      position: absolute;
+      bottom: 14px;
+      font-size: 0.7rem;
+      color: #7d776d;
+      opacity: 0.85;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .flip-card-back {
+      background: var(--card-back);
+      transform: rotateY(180deg);
+      color: var(--text-light);
+      border: 1px solid rgba(223, 177, 91, 0.2);
+    }
+
+    .flip-card-back .translation {
+      font-size: 1.35rem;
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 8px;
+      line-height: 1.3;
+      color: #ffffff;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+    }
+
+    .flip-card-back .transcription {
+      font-size: 0.95rem;
+      color: var(--accent-warm-soft);
+      font-weight: 600;
+      font-style: italic;
+      letter-spacing: 0.3px;
+    }
+
+    .flip-card-back .back-icon {
+      position: absolute;
+      bottom: 14px;
+      font-size: 1.1rem;
+      opacity: 0.85;
+    }
+
+    .completion-banner {
+      display: none;
+      text-align: center;
+      padding: 36px 20px;
+      margin: 20px 0 40px;
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(223, 177, 91, 0.25);
+      border-radius: var(--radius);
+      animation: fadeInUp 0.4s ease;
+    }
+
+    .completion-banner.show {
+      display: block;
+    }
+
+    .completion-banner .trophy {
+      font-size: 3.2rem;
+      margin-bottom: 12px;
+      display: block;
+      animation: bounce 1.2s ease infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .completion-banner h3 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--accent-warm);
+      margin-bottom: 8px;
+    }
+
+    .completion-banner p {
+      color: var(--text-muted);
+      font-size: 1rem;
+    }
+
+    .btn-reset {
+      margin-top: 20px;
+      padding: 12px 34px;
+      background: linear-gradient(135deg, var(--accent-warm) 0%, #c89537 100%);
+      color: #12151e;
+      border: none;
+      border-radius: 50px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 18px rgba(223, 177, 91, 0.25);
+    }
+
+    .btn-reset:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 22px rgba(223, 177, 91, 0.35);
+    }
+
+    .btn-reset:active {
+      transform: translateY(0);
+    }
+
+    @media (max-width: 400px) {
+      .header h1 { font-size: 1.5rem; }
+      .header .arabic-title { font-size: 1.6rem; }
+      .cards-grid { grid-template-columns: 1fr; }
+      .lessons-grid { grid-template-columns: 1fr; }
+      .flip-card { height: 200px; }
+      .flip-card-front .arabic-word { font-size: 2.3rem; }
+    }
+
+    @media (min-width: 768px) {
+      .container { padding: 30px 40px; }
+      .cards-grid { grid-template-columns: repeat(2, 1fr); }
+      .flip-card { height: 230px; }
+    }
+
+    @media (min-width: 1024px) {
+      .cards-grid { grid-template-columns: repeat(3, 1fr); }
+      .lessons-grid { grid-template-columns: repeat(3, 1fr); }
+      .flip-card { height: 240px; }
+    }
+
+    .confetti-piece {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      top: -20px;
+      z-index: 9999;
+      pointer-events: none;
+      animation: confettiFall linear forwards;
+    }
+
+    @keyframes confettiFall {
+      0% {
+        transform: translateY(0) rotate(0deg) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) rotate(720deg) scale(0.3);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- ГЛАВНАЯ СТРАНИЦА -->
+    <div id="page-home" class="page active">
+      <header class="header">
+        <span class="header-icon">📖</span>
+        <div class="arabic-title">تَعَلَّمِ العَرَبِيَّة</div>
+        <h1>Учим арабский язык</h1>
+        <p>Выбери урок и начни учить новые слова!</p>
+      </header>
+
+      <div class="lessons-grid" id="lessons-grid"></div>
+    </div>
+
+    <!-- СТРАНИЦА УРОКА -->
+    <div id="page-lesson" class="page">
+      <nav class="lesson-nav">
+        <button class="btn-back" onclick="goHome()">
+          ← Назад к урокам
+        </button>
+        <div class="lesson-progress-info">
+          <div class="progress-circle" id="progress-circle">
+            <span id="progress-text">0%</span>
+          </div>
+          <span id="progress-label">0 / 0</span>
+        </div>
+      </nav>
+
+      <div class="lesson-page-title">
+        <h2 id="lesson-title"></h2>
+        <p id="lesson-subtitle"></p>
+      </div>
+
+      <p class="hint-text">👆 Нажми на карточку, чтобы увидеть перевод</p>
+
+      <div class="cards-grid" id="cards-grid"></div>
+
+      <div class="completion-banner" id="completion-banner">
+        <span class="trophy">🏆</span>
+        <h3>Отлично!</h3>
+        <p>Ты выучил все слова в этом уроке! Так держать! 🌟</p>
+        <button class="btn-reset" onclick="resetLesson()">Повторить урок</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    /* ============================================================
+       📝 ДАННЫЕ УРОКОВ
+       ============================================================ */
+    const lessons = [
+      {
+        title: "Сура аль-Фатиха. Часть 1",
+        emoji: "📖",
+        desc: "Ключевые слова из первой суры Корана",
+        words: [
+          { ar: "بِـ",       ru: "с, посредством",        tr: "би (предлог)" },
+          { ar: "ٱسْمٌ",      ru: "Имя, Название", tr: "исм(ун)" },
+          { ar: "حَمْدٌ",    ru: "Хвала",         tr: "хамд(ун)" },
+          { ar: "ٱلْحَمْدُ",    ru: "Вся хвала",         tr: "аль-хамд(у)" },
+          { ar: "لِـ", ru: "Предлог принадлежности",         tr: "ли" },
+          { ar: "لِلَّهِ", ru: "Принадлежит Аллаху",         tr: "лиЛа́h(и)" },
+          { ar: "رَبٌّ",   ru: "Господин, Хозяин",  tr: "робб(ун)" },
+          { ar: "عَالَمٌ",   ru: "Мир, Вселенная",  tr: "'а́лям(ун)" },
+          { ar: "عَالَمُونَ",   ru: "Миры, Вселенные",  tr: "'а́ляму́н(а)" },
+          { ar: "ٱلْعَالَمُونَ",   ru: "Все миры",  tr: "аль-'а́ляму́н(а)" },
+          { ar: "مَلَكَ", ru: "Он владел",   tr: "маляка" },
+          { ar: "يَمْلِكُ",   ru: "Он владеет",  tr: "йамлику" },
+          { ar: "مَالِكٌ",        ru: "Тот, кто владеет",       tr: "Ма́лик(ун)" },
+          { ar: "يَوْمٌ",       ru: "День",          tr: "йаwм(ун)" },
+          { ar: "دِينٌ",     ru: "Воздаяние, Религия",     tr: "ди́н(ун)" }
+        ]
+      },
+      {
+        title: "Сура аль-Фатиха. Часть 2",
+        emoji: "📖",
+        desc: "Ключевые слова из первой суры Корана",
+        words: [
+          { ar: "إِيَّاكَ",       ru: "Тебе, Тебя",        tr: "иййа́ка (м.р.)" },
+          { ar: "إِيَّاكِ",      ru: "Тебе, Тебя", tr: "иййа́ки (ж.р.)" },
+          { ar: "عَبَدَ",    ru: "Он поклонялся",         tr: "'абада" },
+          { ar: "يَعْبُدُ",    ru: "Он поклоняется",         tr: "йа'буду" },
+          { ar: "نَعْبُدُ", ru: "Мы поклоняемся",         tr: "на'буду" },
+          { ar: "ٱسْتَعَانَ", ru: "Он просил о помощи",         tr: "иста'а́на" },
+          { ar: "يَسْتَعِينُ",   ru: "Он просит о помощи",  tr: "йаста'и́ну" },
+          { ar: "نَسْتَعِينُ",   ru: "Мы просим о помощи",  tr: "наста'и́ну" },
+          { ar: "هَدَى",   ru: "Он вёл, направлял",  tr: "hада́" },
+          { ar: "يَهْدِي",   ru: "Он ведёт, направляет",  tr: "йаhди́" },
+          { ar: "ٱهْدِ", ru: "Веди, наравь",   tr: "иhди" },
+          { ar: "ٱهْدِنَا",   ru: "Веди нас",  tr: "иhдина́" },
+          { ar: "صِرَاطٌ",        ru: "Путь, Дорога",       tr: "sыро́t(ун)" },
+          { ar: "مُسْتَقِيمٌ",       ru: "Прямой",          tr: "мустакъи́м(ун)" }
+        ]
+      },
+      {
+        title: "Сура аль-Фатиха. Часть 3",
+        emoji: "📖",
+        desc: "Ключевые слова из первой суры Корана",
+        words: [
+          { ar: "ٱلَّذِى",       ru: "Который",        tr: "алляzи́ (м.р.)" },
+          { ar: "ٱلَّذِينَ",      ru: "Которые", tr: "алляzи́на (м.р.)" },
+          { ar: "ٱلَّتِى",    ru: "Которая",         tr: "алляти́ (ж.р.)" },
+          { ar: "ٱلَّاتِى",    ru: "Которые",         tr: "алла́ти́ (ж.р.)" },
+          { ar: "نَعِمَ", ru: "Он был в благополучии",         tr: "на'има" },
+          { ar: "أَنْعَمَ", ru: "Он одарил благополучием",         tr: "ан'ама" },
+          { ar: "أَنْعَمْتَ",   ru: "Ты одарил благополучием",  tr: "ан'амта (м.р.)" },
+          { ar: "أَنْعَمْتُ",   ru: "Я одарил благополучием",  tr: "ан'амту" },
+          { ar: "عَلَى",   ru: "На, Над",  tr: "'ала́ (предлог)" },
+          { ar: "عَلَيْهِمْ",   ru: "На них",  tr: "'алейhим" },
+          { ar: "غَيْرٌ", ru: "Не, Кроме",   tr: "гойр(ун)" },
+          { ar: "غَضِبَ",   ru: "Он разгневался",  tr: "гоdиба" },
+          { ar: "غَاضِبٌ",        ru: "Тот, кто гневается",       tr: "го́dиб(ун)" },
+          { ar: "مَغْضُوبٌ عَلَيْهِ",       ru: "Тот, на кого гневаются",          tr: "магdу́бун 'алейhи (ед.ч.)" },
+          { ar: "مَغْضُوبٌ عَلَيْهِمْ",       ru: "Те, на кого гневаются",          tr: "магdу́бун 'алейhим (мн.ч.)" },
+          { ar: "لَا",       ru: "Не",          tr: "ла́" },
+          { ar: "ضَلَّ",       ru: "Он заблудился",          tr: "dолля" },
+          { ar: "ضَالٌّ",       ru: "Заблудившийся",          tr: "dо́лл(ун) (ед.ч.)" },
+          { ar: "ضَالُّونَ",       ru: "Заблудшие",          tr: "dо́ллу́н(а) (мн.ч.)" }
+        ]
+      },
+      {
+        title: "Сура аль-Бакара. Часть 1",
+        emoji: "📖",
+        desc: "Ключевые слова из второй суры Корана",
+        words: [
+          { ar: "هَذَا",       ru: "Этот",        tr: "hа́zа́ (м.р.)" },
+          { ar: "هَذِهِ",      ru: "Эта",    tr: "hа́zиhи (ж.р.)" },
+          { ar: "ذَلِكَ",    ru: "Тот",         tr: "zа́лика (м.р.)" },
+          { ar: "تِلْكَ",    ru: "Та",         tr: "тилька (ж.р.)" },
+          { ar: "كِتَابٌ", ru: "Книга",         tr: "кита́б(ун) (м.р.)" },
+          { ar: "لَا", ru: "Нет",         tr: "ла́" },
+          { ar: "رَيْبٌ",   ru: "Сомнение",  tr: "ройб(ун) (м.р.)" },
+          { ar: "لَا رَيْبَ",   ru: "Нет сомнения",  tr: "ла́ ройба" },
+          { ar: "فِى",   ru: "В",  tr: "фи́ (предлог)" },
+          { ar: "فِيهِ",   ru: "В нём",  tr: "фи́hи" },
+          { ar: "هُدًى", ru: "Путеводитель",   tr: "hуд(ан)" },
+          { ar: "لِـ",   ru: "Принадлежит, Для",  tr: "ли (предлог)" },
+          { ar: "اِتَّقَى",        ru: "Он остерегался",       tr: "иттакъо́" },
+          { ar: "يَتَّقِي",       ru: "Он остерегается",          tr: "йаттакъи́" },
+          { ar: "مُتَّقٍ",       ru: "Тот, кто остерегается",          tr: "муттакъ(ин) (ед.ч.)" },
+          { ar: "مُتَّقُونَ",       ru: "Те, кто остерегаются",          tr: "муттакъу́н(а) (мн.ч.)" }
+        ]
+      }
+    ];
+
+    /* ============================================================
+       ⚙️ ЛОГИКА VK BRIDGE И БЫСТРОГО ХРАНИЛИЩА
+       ============================================================ */
+    // Подхватываем мост из текущего окна или из родительского (загрузчика)
+    const bridge = window.vkBridge || (window.parent && window.parent.vkBridge) || null;
+
+    let currentUserId = 'default';
+    let allUserProgress = {};
+    let currentLesson = null;
+    let flippedCards = new Set();
+
+    function detectUserId() {
+      try {
+        let params = new URLSearchParams(window.location.search);
+        let uid = params.get('vk_user_id');
+
+        if (!uid && window.location.hash) {
+          const hash = window.location.hash.substring(1);
+          const qIndex = hash.indexOf('?');
+          const hashQuery = qIndex !== -1 ? hash.substring(qIndex + 1) : hash;
+          params = new URLSearchParams(hashQuery);
+          uid = params.get('vk_user_id');
+        }
+
+        // Если открыто во фрейме, берем параметры от родителя
+        if (!uid && window.parent && window.parent !== window) {
+          try {
+            const parentParams = new URLSearchParams(window.parent.location.search);
+            uid = parentParams.get('vk_user_id');
+          } catch(e) {}
+        }
+
+        if (uid) {
+          currentUserId = uid;
+        }
+      } catch (e) {
+        console.warn('Ошибка чтения параметров URL:', e);
+      }
+    }
+
+    // Мгновенное чтение из LocalStorage
+    function loadLocalProgress() {
+      const localKey = `arabic_all_prog_u${currentUserId}`;
+      try {
+        const raw = localStorage.getItem(localKey);
+        if (raw) {
+          allUserProgress = JSON.parse(raw);
+        }
+      } catch (e) {
+        allUserProgress = {};
+      }
+    }
+
+    // Фоновая синхронизация с облаком VK
+    async function syncCloudProgress() {
+      const storageKey = 'arabic_all_prog';
+
+      if (bridge) {
+        try {
+          // Защита от зависания промиса: максимум 1.5 сек на ответ
+          const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject('timeout'), 1500));
+          const res = await Promise.race([
+            bridge.send('VKWebAppStorageGet', { keys: [storageKey] }),
+            timeoutPromise
+          ]);
+
+          if (res && res.keys && res.keys[0] && res.keys[0].value) {
+            allUserProgress = JSON.parse(res.keys[0].value);
+            // Если мы на главной — плавно освежаем прогресс-бары
+            if (currentLesson === null) {
+              renderHome();
+            }
+          }
+        } catch (e) {
+          console.warn('VK Storage не ответил вовремя, остаемся на кэше:', e);
+        }
+      }
+    }
+
+    function saveProgress(lessonIndex, flippedSet) {
+      allUserProgress[lessonIndex] = [...flippedSet];
+
+      const serialized = JSON.stringify(allUserProgress);
+      const storageKey = 'arabic_all_prog';
+      const localKey = `arabic_all_prog_u${currentUserId}`;
+
+      try {
+        localStorage.setItem(localKey, serialized);
+      } catch (e) {}
+
+      if (bridge) {
+        bridge.send('VKWebAppStorageSet', {
+          key: storageKey,
+          value: serialized
+        }).catch(err => {
+          console.warn('Ошибка сохранения в VK Storage:', err);
+        });
+      }
+    }
+
+    function getLessonProgress(lessonIndex) {
+      const arr = allUserProgress[lessonIndex];
+      return new Set(Array.isArray(arr) ? arr : []);
+    }
+
+    /* ============================================================
+       🖥️ РЕНДЕР И ВЗАИМОДЕЙСТВИЕ
+       ============================================================ */
+    function renderHome() {
+      const grid = document.getElementById('lessons-grid');
+      if (!grid) return;
+      grid.innerHTML = '';
+
+      lessons.forEach((lesson, index) => {
+        const progress = getLessonProgress(index);
+        const percent = Math.round((progress.size / lesson.words.length) * 100);
+
+        const card = document.createElement('div');
+        card.className = 'lesson-card';
+        card.onclick = () => openLesson(index);
+
+        card.innerHTML = `
+          <span class="lesson-emoji">${lesson.emoji}</span>
+          <div class="lesson-number">Урок ${index + 1}</div>
+          <div class="lesson-title">${lesson.title}</div>
+          <div class="lesson-desc">${lesson.desc}</div>
+          <div class="lesson-meta">
+            <span class="lesson-words-count">${lesson.words.length} слов</span>
+            <div class="lesson-arrow">→</div>
+          </div>
+          <div class="lesson-progress-bar">
+            <div class="lesson-progress-fill" style="width: ${percent}%"></div>
+          </div>
+        `;
+
+        grid.appendChild(card);
+      });
+    }
+
+    function openLesson(index) {
+      currentLesson = index;
+      flippedCards = getLessonProgress(index);
+
+      const lesson = lessons[index];
+      document.getElementById('lesson-title').textContent = `${lesson.emoji} ${lesson.title}`;
+      document.getElementById('lesson-subtitle').textContent = `Урок ${index + 1} — ${lesson.desc}`;
+
+      const grid = document.getElementById('cards-grid');
+      grid.innerHTML = '';
+
+      lesson.words.forEach((word, i) => {
+        const card = document.createElement('div');
+        card.className = 'flip-card';
+        card.style.animationDelay = `${i * 0.04}s`;
+
+        if (flippedCards.has(i)) {
+          card.classList.add('flipped');
+        }
+
+        card.onclick = () => toggleCard(card, i);
+
+        card.innerHTML = `
+          <div class="flip-card-inner">
+            <div class="flip-card-front">
+              <span class="card-number">#${i + 1}</span>
+              <div class="arabic-word">${word.ar}</div>
+              <span class="tap-hint">нажми ↻</span>
+            </div>
+            <div class="flip-card-back">
+              <div class="translation">${word.ru}</div>
+              <div class="transcription">${word.tr || ''}</div>
+              <span class="back-icon">✅</span>
+            </div>
+          </div>
+        `;
+
+        grid.appendChild(card);
+      });
+
+      updateProgressUI();
+
+      const banner = document.getElementById('completion-banner');
+      if (flippedCards.size === lesson.words.length) {
+        banner.classList.add('show');
+      } else {
+        banner.classList.remove('show');
+      }
+
+      showPage('page-lesson');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      try {
+        window.history.pushState({ page: 'lesson' }, '');
+      } catch(e) {}
+    }
+
+    function toggleCard(card, index) {
+      card.classList.toggle('flipped');
+
+      if (card.classList.contains('flipped')) {
+        flippedCards.add(index);
+      } else {
+        flippedCards.delete(index);
+      }
+
+      saveProgress(currentLesson, flippedCards);
+      updateProgressUI();
+
+      const banner = document.getElementById('completion-banner');
+      if (flippedCards.size === lessons[currentLesson].words.length) {
+        setTimeout(() => {
+          banner.classList.add('show');
+          launchConfetti();
+        }, 450);
+      } else {
+        banner.classList.remove('show');
+      }
+    }
+
+    function updateProgressUI() {
+      const total = lessons[currentLesson].words.length;
+      const done = flippedCards.size;
+      const percent = Math.round((done / total) * 100);
+
+      document.getElementById('progress-text').textContent = `${percent}%`;
+      document.getElementById('progress-label').textContent = `${done} / ${total}`;
+      document.getElementById('progress-circle').style.setProperty('--progress', `${percent}%`);
+    }
+
+    function resetLesson() {
+      flippedCards.clear();
+      saveProgress(currentLesson, flippedCards);
+      document.getElementById('completion-banner').classList.remove('show');
+      openLesson(currentLesson);
+    }
+
+    function goHome() {
+      currentLesson = null;
+      showPage('page-home');
+      renderHome();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showPage(pageId) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      const target = document.getElementById(pageId);
+      if (target) target.classList.add('active');
+    }
+
+    function launchConfetti() {
+      const colors = ['#dfb15b', '#ebd095', '#7694b8', '#38b284', '#e28d75'];
+      for (let i = 0; i < 40; i++) {
+        setTimeout(() => {
+          const piece = document.createElement('div');
+          piece.className = 'confetti-piece';
+          piece.style.left = Math.random() * 100 + 'vw';
+          piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+          piece.style.width = (Math.random() * 8 + 6) + 'px';
+          piece.style.height = (Math.random() * 8 + 6) + 'px';
+          piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+          piece.style.animationDuration = (Math.random() * 2 + 2) + 's';
+          document.body.appendChild(piece);
+          setTimeout(() => piece.remove(), 3500);
+        }, i * 25);
+      }
+    }
+
+    window.addEventListener('popstate', () => {
+      if (currentLesson !== null) {
+        goHome();
+      }
+    });
+
+    /* ============================================================
+       🚀 ГАРАНТИРОВАННЫЙ ЗАПУСК ПРИЛОЖЕНИЯ
+       ============================================================ */
+    function startApp() {
+      detectUserId();
+      loadLocalProgress();
+      renderHome();
+
+      // Фоновая инициализация VK Bridge без блокировки экрана
+      if (bridge && typeof bridge.send === 'function') {
+        bridge.send('VKWebAppInit').catch(() => {});
+      }
+
+      syncCloudProgress();
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', startApp);
+    } else {
+      startApp();
+    }
+  </script>
+</body>
+</html>
