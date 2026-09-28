@@ -1,207 +1,196 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>تعلم العربية</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+    <title>تعلم العربية</title>
 
-  <style>
-    :root {
-      --bg-primary: #12151f;
-      --accent-warm: #dfb15b;
-      --text-muted: #9ba8ba;
-    }
+    <style>
+      :root {
+        --bg-primary: #12151f;
+        --accent-warm: #dfb15b;
+        --text-muted: #9ba8ba;
+      }
 
-    *, *::before, *::after {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+      }
 
-    html, body {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background-color: var(--bg-primary);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background-color: var(--bg-primary);
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      }
 
-    /* Фрейм с сайтом */
-    #app-frame {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border: none;
-      opacity: 0;
-      transition: opacity 0.35s ease;
-      z-index: 1;
-    }
+      /* Фрейм с сайтом */
+      #app-frame {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+        opacity: 0;
+        transition: opacity 0.35s ease;
+        z-index: 1;
+      }
 
-    #app-frame.loaded {
-      opacity: 1;
-    }
+      #app-frame.loaded {
+        opacity: 1;
+      }
 
-    /* Экран мгновенной загрузки (Splash / Loader) */
-    #splash-screen {
-      position: fixed;
-      inset: 0;
-      background: radial-gradient(120% 100% at 50% 0%, #1c2333 0%, #10131c 100%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 10;
-      transition: opacity 0.4s ease, visibility 0.4s ease;
-      padding-top: env(safe-area-inset-top, 0);
-      padding-bottom: env(safe-area-inset-bottom, 0);
-    }
+      /* Экран мгновенной загрузки (Splash / Loader) */
+      #splash-screen {
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(120% 100% at 50% 0%, #1c2333 0%, #10131c 100%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+        transition:
+          opacity 0.4s ease,
+          visibility 0.4s ease;
+        padding-top: env(safe-area-inset-top, 0);
+        padding-bottom: env(safe-area-inset-bottom, 0);
+      }
 
-    #splash-screen.hidden {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-    }
+      #splash-screen.hidden {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
 
-    .splash-icon {
-      font-size: 3.2rem;
-      margin-bottom: 12px;
-      animation: float 2.5s ease-in-out infinite;
-      filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.35));
-    }
+      .splash-icon {
+        font-size: 3.2rem;
+        margin-bottom: 12px;
+        animation: float 2.5s ease-in-out infinite;
+        filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.35));
+      }
 
-    .splash-title {
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: var(--accent-warm);
-      margin-bottom: 6px;
-      letter-spacing: -0.01em;
-    }
+      .splash-title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--accent-warm);
+        margin-bottom: 6px;
+        letter-spacing: -0.01em;
+      }
 
-    .splash-subtitle {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      margin-bottom: 28px;
-    }
+      .splash-subtitle {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        margin-bottom: 28px;
+      }
 
-    /* Анимированный спиннер */
-    .spinner {
-      width: 38px;
-      height: 38px;
-      border: 3px solid rgba(223, 177, 91, 0.15);
-      border-top-color: var(--accent-warm);
-      border-radius: 50%;
-      animation: spin 0.85s linear infinite;
-    }
+      /* Анимированный спиннер */
+      .spinner {
+        width: 38px;
+        height: 38px;
+        border: 3px solid rgba(223, 177, 91, 0.15);
+        border-top-color: var(--accent-warm);
+        border-radius: 50%;
+        animation: spin 0.85s linear infinite;
+      }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
 
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-8px); }
-    }
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-8px);
+        }
+      }
 
-    /* Сообщение при сбое сети */
-    .retry-box {
-      display: none;
-      text-align: center;
-      margin-top: 15px;
-    }
+      /* Сообщение при сбое сети */
+      .retry-box {
+        display: none;
+        text-align: center;
+        margin-top: 15px;
+      }
 
-    .retry-btn {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(223, 177, 91, 0.3);
-      color: #fff;
-      padding: 8px 18px;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-  </style>
+      .retry-btn {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(223, 177, 91, 0.3);
+        color: #fff;
+        padding: 8px 18px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Лоадер: отрисовывается мгновенно -->
+    <div id="splash-screen">
+      <div class="splash-icon">📖</div>
+      <div class="splash-title">تَعَلَّمِ العَرَبِيَّة</div>
+      <div class="splash-subtitle">Загрузка уроков...</div>
+      <div class="spinner" id="loader-spinner"></div>
 
-  <!-- VK Bridge загружается асинхронно, не блокируя первый кадр -->
-  <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js" defer></script>
-</head>
-<body>
-
-  <!-- Лоадер: отрисовывается мгновенно -->
-  <div id="splash-screen">
-    <div class="splash-icon">📖</div>
-    <div class="splash-title">تَعَلَّمِ العَرَبِيَّة</div>
-    <div class="splash-subtitle">Загрузка уроков...</div>
-    <div class="spinner" id="loader-spinner"></div>
-    
-    <div class="retry-box" id="retry-box">
-      <p style="color: #e28d75; font-size: 0.85rem;">Загрузка занимает больше времени, чем обычно</p>
-      <button class="retry-btn" onclick="reloadFrame()">Повторить попытку</button>
+      <div class="retry-box" id="retry-box">
+        <p style="color: #e28d75; font-size: 0.85rem">
+          Загрузка занимает больше времени, чем обычно
+        </p>
+        <button class="retry-btn" onclick="reloadFrame()">Повторить попытку</button>
+      </div>
     </div>
-  </div>
 
-  <!-- Фрейм целевого сайта -->
-  <iframe id="app-frame" allow="clipboard-write"></iframe>
+    <!-- Фрейм целевого сайта -->
+    <iframe id="app-frame" allow="clipboard-write"></iframe>
 
-  <script>
-    // 1. URL вашего основного сайта (укажите ваш актуальный адрес)
-    const TARGET_SITE_URL = './words.html';
+    <script>
+      // 1. URL вашего основного сайта (укажите ваш актуальный адрес)
+      const TARGET_SITE_URL = './words.html';
 
-    const splash = document.getElementById('splash-screen');
-    const frame = document.getElementById('app-frame');
-    const retryBox = document.getElementById('retry-box');
+      const splash = document.getElementById('splash-screen');
+      const frame = document.getElementById('app-frame');
+      const retryBox = document.getElementById('retry-box');
 
-    // 2. Мгновенная инициализация VK Bridge
-    function initVKBridge() {
-      const bridge = window.vkBridge || (typeof vkBridge !== 'undefined' ? vkBridge : null);
-      if (bridge) {
-        bridge.send('VKWebAppInit').catch(err => {
-          console.warn('VKWebAppInit error:', err);
-        });
-      }
-    }
+      // Скрытие лоадера при готовности страницы внутри iframe
+      frame.onload = () => {
+        // Плавное появление сайта
+        frame.classList.add('loaded');
+        // Плавное скрытие лоадера
+        splash.classList.add('hidden');
+      };
 
-    // 3. Формирование ссылки с сохранением query-параметров VK (vk_user_id, sign, etc.)
-    function buildTargetUrl() {
-      const currentParams = window.location.search;
-      const hash = window.location.hash;
-      return TARGET_SITE_URL + currentParams + hash;
-    }
-
-    // 4. Скрытие лоадера при готовности страницы внутри iframe
-    frame.onload = () => {
-      // Плавное появление сайта
-      frame.classList.add('loaded');
-      // Плавное скрытие лоадера
-      splash.classList.add('hidden');
-    };
-
-    function reloadFrame() {
-      retryBox.style.display = 'none';
-      frame.src = buildTargetUrl();
-    }
-
-    // Таймаут на случай медленного интернета (показать кнопку повтора через 8 сек)
-    setTimeout(() => {
-      if (!frame.classList.contains('loaded')) {
-        retryBox.style.display = 'block';
-      }
-    }, 8000);
-
-    // Запуск приложения
-    document.addEventListener('DOMContentLoaded', () => {
-      // Инициализируем мост (если скрипт уже загружен или подождем onload)
-      if (window.vkBridge) {
-        initVKBridge();
-      } else {
-        window.addEventListener('load', initVKBridge);
+      function reloadFrame() {
+        retryBox.style.display = 'none';
+        frame.src = TARGET_SITE_URL;
       }
 
-      // Начинаем загрузку сайта
-      frame.src = buildTargetUrl();
-    });
-  </script>
-</body>
+      // Таймаут на случай медленного интернета (показать кнопку повтора через 8 сек)
+      setTimeout(() => {
+        if (!frame.classList.contains('loaded')) {
+          retryBox.style.display = 'block';
+        }
+      }, 8000);
+
+      // Запуск приложения
+      document.addEventListener('DOMContentLoaded', () => {
+        // Начинаем загрузку сайта
+        frame.src = TARGET_SITE_URL;
+      });
+    </script>
+  </body>
 </html>
